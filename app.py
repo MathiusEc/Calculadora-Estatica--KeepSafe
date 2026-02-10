@@ -1,6 +1,18 @@
 
 import streamlit as st
 from PIL import Image
+import pandas as pd
+
+# Función para cargar CSS externo
+def load_css(file_name):
+    try:
+        with open(file_name, "r", encoding="utf-8") as f:
+            st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+    except FileNotFoundError:
+        pass  # Si el archivo no existe, continúa sin estilos
+
+# Cargar estilos
+load_css("style.css")
 
 # Logo
 logo = Image.open("logo1.0.png")
@@ -19,8 +31,46 @@ cultivos_data = {
 
 
 # Selección de cultivo y datos de entrada
-cultivo = st.selectbox("Cultivo", list(cultivos_data.keys()))
-hectareas = st.number_input("Hectáreas", min_value=0.1, step=0.1)
+st.markdown("---")
+st.subheader("Datos Generales")
+col1, col2, col3 = st.columns(3)
+with col1:
+    cultivo = st.selectbox("Cultivo", list(cultivos_data.keys()))
+with col2:
+    hectareas = st.number_input("Hectáreas", min_value=0.1, step=0.1, value=1.0)
+with col3:
+    fecha_aplicacion = st.date_input("Fecha de aplicación", key="fecha_aplicacion")
+
+# Simulación de historial de aplicaciones previas (para demo)
+historial_aplicaciones = [
+    {"cultivo": "Banano", "fecha": pd.to_datetime("2026-01-10")},
+    {"cultivo": "Banano", "fecha": pd.to_datetime("2026-02-01")},
+    {"cultivo": "Maíz", "fecha": pd.to_datetime("2026-01-15")},
+]
+
+# Calcular ciclo y frecuencia
+ciclo = 1
+frecuencia = None
+aplicaciones_cultivo = [a for a in historial_aplicaciones if a["cultivo"] == cultivo and a["fecha"].year == fecha_aplicacion.year]
+if aplicaciones_cultivo:
+    fechas_previas = sorted([a["fecha"] for a in aplicaciones_cultivo])
+    ult_fecha = fechas_previas[-1]
+    if ult_fecha < pd.to_datetime(fecha_aplicacion):
+        frecuencia = (pd.to_datetime(fecha_aplicacion) - ult_fecha).days
+        ciclo = len(fechas_previas) + 1
+    else:
+        frecuencia = None
+        ciclo = len(fechas_previas)
+else:
+    ciclo = 1
+    frecuencia = None
+
+st.markdown(":green[Frecuencia (días desde última aplicación):]" if frecuencia is not None else ":blue[Primera aplicación del año]")
+if frecuencia is not None:
+    st.info(f"Frecuencia: {frecuencia} días")
+    st.info(f"Ciclo: {ciclo}")
+else:
+    st.info("Esta es la primera aplicación del año. El ciclo no se llena.")
 
 # Lista de productos agroquímicos comunes
 productos_disponibles = [
@@ -48,29 +98,33 @@ productos_disponibles = [
 # Configuración de mezcla
 st.markdown("---")
 st.subheader("Configuración de Mezcla")
-num_productos = st.number_input("¿Cuántos productos va a usar?", min_value=1, max_value=10, value=1, step=1)
 
-# Tabla dinámica de productos
-productos_mezcla = []
-if num_productos > 0:
-    st.markdown("#### Productos a aplicar")
+with st.expander("Productos a aplicar", expanded=True):
+    num_productos = st.number_input("¿Cuántos productos va a usar?", min_value=1, max_value=10, value=1, step=1)
     
-    for i in range(int(num_productos)):
-        col1, col2, col3 = st.columns([3, 2, 2])
-        
-        with col1:
-            producto = st.selectbox(f"Producto {i+1}", productos_disponibles, key=f"prod_{i}")
-        with col2:
-            cantidad = st.number_input(f"Cantidad (L/ha o kg/ha)", min_value=0.0, step=0.01, key=f"cant_{i}", format="%.3f")
-        with col3:
-            orden = st.number_input(f"Orden de mezcla", min_value=1, max_value=10, value=i+1, step=1, key=f"orden_{i}")
-        
-        if producto != "Seleccionar..." and cantidad > 0:
-            productos_mezcla.append({
-                "producto": producto,
-                "cantidad": cantidad,
-                "orden": orden
-            })
+    # Tabla dinámica de productos
+    productos_mezcla = []
+    if num_productos > 0:
+        for i in range(int(num_productos)):
+            st.markdown(f"**Producto {i+1}**")
+            col1, col2, col3 = st.columns([3, 2, 2])
+            
+            with col1:
+                producto = st.selectbox(f"Nombre", productos_disponibles, key=f"prod_{i}", label_visibility="collapsed")
+            with col2:
+                cantidad = st.number_input(f"Cantidad (L/ha)", min_value=0.0, step=0.01, key=f"cant_{i}", format="%.3f")
+            with col3:
+                orden = st.number_input(f"Orden", min_value=1, max_value=10, value=i+1, step=1, key=f"orden_{i}")
+            
+            if producto != "Seleccionar..." and cantidad > 0:
+                productos_mezcla.append({
+                    "producto": producto,
+                    "cantidad": cantidad,
+                    "orden": orden
+                })
+            
+            if i < num_productos - 1:
+                st.markdown("")
 
 # Cálculos automáticos
 if productos_mezcla and hectareas > 0:
@@ -90,50 +144,40 @@ if productos_mezcla and hectareas > 0:
     
     # Mostrar tablas
     st.markdown("---")
-    st.subheader("Tabla de Mezcla - Para 1 Hectárea")
+    st.subheader("Resultados de Mezcla")
     
     # Tabla para 1 ha
-    st.markdown("| Producto | Cantidad (L/ha) | Orden |")
-    st.markdown("|----------|-----------------|-------|")
-    for p in productos_mezcla_ordenados:
-        st.markdown(f"| {p['producto']} | {p['cantidad']:.3f} | {p['orden']} |")
+    st.markdown("#### Para 1 Hectárea")
+    tabla_1ha = pd.DataFrame([
+        {"Producto": p['producto'], "Cantidad (L/ha)": f"{p['cantidad']:.3f}", "Orden": p['orden']}
+        for p in productos_mezcla_ordenados
+    ])
+    st.dataframe(tabla_1ha, use_container_width=True, hide_index=True)
     
-    st.markdown(f"| **SUMA DE REACTIVOS** | **{suma_reactivos_1ha:.3f}** | |")
-    st.markdown(f"| **TOTAL MEZCLA** | **{total_mezcla_1ha:.3f}** | |")
-    st.markdown(f"| **AGUA NECESARIA** | **{agua_necesaria_1ha:.3f}** | |")
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.metric("Suma de Reactivos", f"{suma_reactivos_1ha:.3f} L/ha")
+    with col2:
+        st.metric("Total Mezcla", f"{total_mezcla_1ha:.3f} L/ha")
+    with col3:
+        st.metric("Agua Necesaria", f"{agua_necesaria_1ha:.3f} L/ha")
     
     # Tabla para total de hectáreas
     st.markdown("---")
-    st.subheader(f"Tabla de Mezcla - Para {hectareas:.1f} Hectáreas")
+    st.markdown(f"#### Para {hectareas:.1f} Hectáreas (Total)")
+    tabla_total = pd.DataFrame([
+        {"Producto": p['producto'], "Cantidad Total (L)": f"{p['cantidad'] * hectareas:.3f}", "Orden": p['orden']}
+        for p in productos_mezcla_ordenados
+    ])
+    st.dataframe(tabla_total, use_container_width=True, hide_index=True)
     
-    st.markdown("| Producto | Cantidad Total (L) | Orden |")
-    st.markdown("|----------|-------------------|-------|")
-    for p in productos_mezcla_ordenados:
-        cantidad_total = p['cantidad'] * hectareas
-        st.markdown(f"| {p['producto']} | {cantidad_total:.3f} | {p['orden']} |")
-    
-    st.markdown(f"| **SUMA DE REACTIVOS** | **{suma_reactivos_total:.3f}** | |")
-    st.markdown(f"| **TOTAL MEZCLA** | **{total_mezcla_total:.3f}** | |")
-    st.markdown(f"| **AGUA NECESARIA** | **{agua_necesaria_total:.3f}** | |")
-
-st.markdown("---")
-condiciones_terreno = st.text_area(
-    "Condiciones del terreno",
-    placeholder="Ej: Terreno plano, con pendiente leve hacia el sur. Obstáculos: árboles dispersos, cables eléctricos en el borde este."
-)
-
-
-condiciones_ambientales = st.text_area(
-    "Condiciones ambientales esperadas",
-    placeholder="Ej: Aplicación entre 06h00 y 08h00. Viento <10 km/h. Temperatura 26°C aprox."
-)
-
-
-seguridad_observaciones = st.text_area(
-    "Seguridad / Observaciones especiales",
-    placeholder="Observaciones específicas según el producto o condiciones del sitio."
-)
-
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.metric("Suma de Reactivos", f"{suma_reactivos_total:.3f} L")
+    with col2:
+        st.metric("Total Mezcla", f"{total_mezcla_total:.3f} L")
+    with col3:
+        st.metric("Agua Necesaria", f"{agua_necesaria_total:.3f} L")
 
 # Mostrar Recomendaciones Técnicas y Cálculos Operativos
 if cultivo and hectareas and productos_mezcla:
@@ -144,14 +188,23 @@ if cultivo and hectareas and productos_mezcla:
     tiempo = vuelos * 10 / 60
 
     st.markdown("---")
-    st.subheader("Recomendaciones Técnicas - para el operador")
-    velocidad = st.text_input(f"Velocidad (rango sugerido: {datos['velocidad']})")
-    altura = st.text_input(f"Altura (rango sugerido: {datos['altura']})")
-    faja = st.text_input(f"Ancho de faja (rango sugerido: {datos['ancho_faja']})")
-    gota = st.text_input(f"Tamaño de gota (sugerido: {datos['gota']})")
-    tasa_aplicacion_input = st.text_input(f"Tasa de aplicación (sugerida: {tasa} L/ha)", value=str(tasa))
+    
+    with st.expander("Recomendaciones Técnicas - para el operador", expanded=False):
+        col1, col2 = st.columns(2)
+        with col1:
+            velocidad = st.text_input(f"Velocidad (rango sugerido: {datos['velocidad']})")
+            altura = st.text_input(f"Altura (rango sugerido: {datos['altura']})")
+            faja = st.text_input(f"Ancho de faja (rango sugerido: {datos['ancho_faja']})")
+        with col2:
+            gota = st.text_input(f"Tamaño de gota (sugerido: {datos['gota']})")
+            tasa_aplicacion_input = st.text_input(f"Tasa de aplicación (sugerida: {tasa} L/ha)", value=str(tasa))
 
+    st.markdown("---")
     st.subheader("Cálculos Operativos")
-    st.write(f"Solución total: {total_sol:.2f} L")
-    st.write(f"Vuelos: {vuelos:.0f}")
-    st.write(f"Tiempo estimado: {tiempo:.2f} h")
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.metric("Solución Total", f"{total_sol:.2f} L")
+    with col2:
+        st.metric("Vuelos Estimados", f"{vuelos:.0f}")
+    with col3:
+        st.metric("Tiempo Estimado", f"{tiempo:.2f} h")
