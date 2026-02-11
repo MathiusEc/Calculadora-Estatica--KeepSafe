@@ -3,11 +3,14 @@ from PIL import Image
 import pandas as pd
 from datetime import datetime
 import os
+import io
+import base64
+
 
 # Configuración de página con favicon actualizado
 st.set_page_config(
     page_title="Keep Safe Operation - Calculadora de Mezclas",
-    page_icon="img/icons/favicon-16x16.png",  # Favicon en la nueva ruta
+    page_icon="img/icons/favicon-16x16.png",  # Favicon 
     layout="wide",
     initial_sidebar_state="collapsed",
     menu_items={
@@ -43,15 +46,30 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Logo de la empresa
-import os
-logo_path = "logo1.0.png"
-if not os.path.exists(logo_path):
-    logo_path = "img/KEEP SAFE LOGO-01.png"  # Usa el ícono en la nueva ruta
-logo = Image.open(logo_path)
+logo_path = "img/KEEP SAFE LOGO-01.png"
+try:
+    logo = Image.open(logo_path)
+    buffered = io.BytesIO()
+    logo.save(buffered, format="PNG")
+    img_str = base64.b64encode(buffered.getvalue()).decode()
+    logo_base64 = f"data:image/png;base64,{img_str}"
+except FileNotFoundError:
+    logo_base64 = ""  # Si no encuentra la imagen, no muestra nada
+
 col_logo, col_title = st.columns([1, 5])
 
 with col_logo:
-    st.image(logo, width=200)
+    if logo_base64:
+        st.markdown(
+            f'''
+            <a href="https://mathiusec.github.io/KeepSafe-WebPage/" target="_blank" style="display:inline-block;">
+                <img src="{logo_base64}" width="200" alt="Keep Safe Logo" style="margin-bottom:0;"/>
+            </a>
+            ''',
+            unsafe_allow_html=True
+        )
+    else:
+        st.error("Logo no encontrado. Verifica la ruta del archivo.")
 
 with col_title:
     st.markdown("""
@@ -76,7 +94,10 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# Cultivos data
+# ======================
+# DATOS DE CULTIVOS
+# Modifica aquí los cultivos disponibles y sus parámetros técnicos
+# ======================
 cultivos_data = {
     "Banano": {"tasa_aplicacion": 18, "velocidad": "20-30 km/h", "altura": "7-8 m", "ancho_faja": "7-9.5 m", "gota": "Fina/Media"},
     "Maíz": {"tasa_aplicacion": 19, "velocidad": "20-25 km/h", "altura": "5-6 m", "ancho_faja": "7-8.5 m", "gota": "Fina/Media/Gruesa"},
@@ -84,22 +105,10 @@ cultivos_data = {
     "Cacao": {"tasa_aplicacion": 25, "velocidad": "20-25 km/h", "altura": "7 m", "ancho_faja": "7-8.5 m", "gota": "Muy Fina/Fina/Media"},
 }
 
-
-# ============================================
-# SECCIÓN 3: DATOS GENERALES
-# ============================================
-st.markdown("---")
-st.subheader("Datos Generales de la Aplicación")
-
-col1, col2, col3 = st.columns(3)
-with col1:
-    cultivo = st.selectbox("Cultivo", list(cultivos_data.keys()))
-with col2:
-    hectareas = st.number_input("Hectáreas", min_value=0.1, step=0.1, value=1.0)
-with col3:
-    fecha_aplicacion = st.date_input("Fecha de aplicación", key="fecha_aplicacion")
-
-# Lista de productos agroquímicos comunes (10 productos principales + opción "Otro")
+# ======================
+# LISTA DE PRODUCTOS DISPONIBLES
+# Modifica aquí los productos fitosanitarios que aparecen en el select
+# ======================
 productos_disponibles = [
     "Seleccionar...",
     "Glifosato 480 SL",
@@ -114,6 +123,27 @@ productos_disponibles = [
     "Fosfito de Potasio",
     "Otro"
 ]
+
+# ======================
+# PARÁMETROS DE DRON Y CÁLCULOS OPERATIVOS
+# Si el cliente pide cambiar capacidad de tanque, tiempo de vuelo, etc., modificar aquí
+# ======================
+TANQUE_LITROS = 40  # Capacidad del tanque del dron en litros
+TIEMPO_VUELO_MIN = 10  # Tiempo promedio por vuelo en minutos
+
+# ============================================
+# SECCIÓN 3: DATOS GENERALES
+# ============================================
+st.markdown("---")
+st.subheader("Datos Generales de la Aplicación")
+
+col1, col2, col3 = st.columns(3)
+with col1:
+    cultivo = st.selectbox("Cultivo", list(cultivos_data.keys()))
+with col2:
+    hectareas = st.number_input("Hectáreas", min_value=0.1, step=0.1, value=1.0)
+with col3:
+    fecha_aplicacion = st.date_input("Fecha de aplicación", key="fecha_aplicacion")
 
 # ============================================
 # SECCIÓN 4: CONFIGURACIÓN DE MEZCLA

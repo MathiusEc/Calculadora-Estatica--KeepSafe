@@ -3,6 +3,7 @@
 ## 📋 Pre-requisitos
 - Cuenta de GitHub
 - Cuenta de Streamlit Cloud (conectada con GitHub)
+- Dominio propio en Hostinger (opcional, para redirección)
 
 ## 🚀 Pasos para Desplegar
 
@@ -49,6 +50,27 @@ git push origin main
 Una vez desplegada, copia el link público y compártelo con tus clientes.
 
 **Importante**: Aunque tu repositorio sea privado, la app será pública en el link generado. Sin embargo, **el código fuente NO es visible** para quienes accedan a la app.
+
+---
+
+## 🌐 Redirigir un Subdominio desde Hostinger a Streamlit Cloud
+
+Si tienes un dominio en Hostinger y quieres que un subdominio (por ejemplo, `calculadora.tudominio.com`) apunte a tu app de Streamlit Cloud, sigue estos pasos:
+
+### Pasos para redirigir un subdominio en Hostinger
+
+1. Ingresa al panel de control de Hostinger.
+2. Ve a la sección **Dominios** y selecciona tu dominio principal.
+3. Busca la opción **Subdominios** y crea uno nuevo, por ejemplo: `calculadora.tudominio.com`.
+4. Una vez creado, ve a la sección **Redirección** o **Redirects**.
+5. Selecciona el subdominio creado y configura la redirección tipo **URL Redirect** (o similar) hacia la URL de tu app de Streamlit Cloud, por ejemplo:
+   - `https://nombre-app-usuario.streamlit.app`
+6. Guarda los cambios. La propagación puede tardar unos minutos.
+7. ¡Listo! Ahora cuando alguien visite `calculadora.tudominio.com` será redirigido a tu app de Streamlit.
+
+**Nota:** No es posible usar una subruta (`tudominio.com/calculadora`) para mostrar la app de Streamlit Cloud, solo subdominios o redirección directa.
+
+---
 
 ## 🔒 Seguridad
 
