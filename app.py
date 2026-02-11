@@ -46,7 +46,7 @@ st.markdown("""
 import os
 logo_path = "logo1.0.png"
 if not os.path.exists(logo_path):
-    logo_path = "img/icons/ms-icon-150x150.png"  # Usa el ícono en la nueva ruta
+    logo_path = "img/KEEP SAFE LOGO-01.png"  # Usa el ícono en la nueva ruta
 logo = Image.open(logo_path)
 col_logo, col_title = st.columns([1, 5])
 
@@ -188,17 +188,53 @@ with st.expander("Productos a aplicar", expanded=True):
     
     # Tabla dinámica de productos
     productos_mezcla = []
+    ordenes_usados = []
+    tiene_ordenes_duplicados = False
+    
     if num_productos > 0:
         for i in range(int(num_productos)):
             st.markdown(f"**Producto {i+1}**")
             col1, col2, col3 = st.columns([3, 2, 2])
             
             with col1:
-                producto = st.selectbox(f"Nombre del producto", productos_disponibles, key=f"prod_{i}")
+                producto = st.selectbox(
+                    f"Producto {i+1} - Nombre", 
+                    productos_disponibles, 
+                    key=f"prod_{i}",
+                    help="Seleccione el producto fitosanitario a aplicar",
+                    index=0
+                )
             with col2:
-                cantidad = st.number_input(f"Cantidad (L/ha)", min_value=0.0, step=0.01, key=f"cant_{i}", format="%.3f")
+                cantidad = st.number_input(
+                    f"Cantidad (L/ha)", 
+                    min_value=0.0, 
+                    step=0.01, 
+                    key=f"cant_{i}", 
+                    format="%.3f",
+                    help="Cantidad del producto por hectárea"
+                )
             with col3:
-                orden = st.number_input(f"Orden de mezcla", min_value=1, max_value=10, value=i+1, step=1, key=f"orden_{i}")
+                orden = st.number_input(
+                    f"Orden de mezcla", 
+                    min_value=1, 
+                    max_value=int(num_productos), 
+                    value=min(i+1, int(num_productos)), 
+                    step=1, 
+                    key=f"orden_{i}",
+                    help="Orden en el que se agregará a la mezcla"
+                )
+            
+            # Validación de orden duplicado
+            if orden in ordenes_usados and producto != "Seleccionar...":
+                tiene_ordenes_duplicados = True
+                st.markdown(f"""
+                <div style="display: flex; align-items: center; gap: 0.5rem; background: #FFF4E6; border-left: 4px solid #FF9800; padding: 0.75rem 1rem; border-radius: 4px; margin: 0.5rem 0;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="#FF9800">
+                        <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
+                    </svg>
+                    <span style="color: #663C00; font-size: 0.9rem;">El orden {int(orden)} ya está asignado a otro producto. Por favor, use un orden diferente.</span>
+                </div>
+                """, unsafe_allow_html=True)
             
             if producto != "Seleccionar..." and cantidad > 0:
                 productos_mezcla.append({
@@ -206,12 +242,29 @@ with st.expander("Productos a aplicar", expanded=True):
                     "cantidad": cantidad,
                     "orden": orden
                 })
+                if orden not in ordenes_usados:
+                    ordenes_usados.append(orden)
             
             if i < num_productos - 1:
                 st.markdown("")
 
-# Cálculos automáticos
-if productos_mezcla and hectareas > 0:
+# Mostrar mensaje si hay errores de validación
+if tiene_ordenes_duplicados:
+    st.markdown("---")
+    st.markdown("""
+    <div style="display: flex; align-items: center; gap: 1rem; background: #FFF4E6; border: 2px solid #FF9800; padding: 1.25rem 1.5rem; border-radius: 8px; margin: 1rem 0;">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" style="flex-shrink: 0;">
+            <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z" fill="#FF9800"/>
+        </svg>
+        <div>
+            <h4 style="color: #E65100; margin: 0 0 0.5rem 0; font-size: 1.1rem;">Corrija los errores antes de continuar</h4>
+            <p style="color: #663C00; margin: 0; font-size: 0.95rem;">Por favor, asigne órdenes de mezcla únicos a cada producto. Los cálculos se mostrarán una vez que corrija los órdenes duplicados.</p>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+# Cálculos automáticos - solo si no hay errores de validación
+elif productos_mezcla and hectareas > 0:
     # Ordenar por orden de mezcla
     productos_mezcla_ordenados = sorted(productos_mezcla, key=lambda x: x["orden"])
     
