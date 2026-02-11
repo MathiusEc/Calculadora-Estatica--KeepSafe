@@ -1,38 +1,65 @@
-
-import streamlit as st
+﻿import streamlit as st
 from PIL import Image
 import pandas as pd
 from datetime import datetime
+import os
 
-# Configuración de página
+# Configuración de página con favicon actualizado
 st.set_page_config(
     page_title="Keep Safe Operation - Calculadora de Mezclas",
-    page_icon="🚁",
+    page_icon="img/icons/favicon-16x16.png",  # Favicon en la nueva ruta
     layout="wide",
-    initial_sidebar_state="collapsed"
+    initial_sidebar_state="collapsed",
+    menu_items={
+        'Get Help': 'https://wa.me/593983899314',
+        'Report a bug': "mailto:keepsafe.ecuador@gmail.com",
+        'About': """**Keep Safe S.A.S.**  
+        Agricultura de Precisión con Drones DJI Agras T50  
+        Guayaquil, Ecuador"""
+    }
 )
 
-# Función para cargar CSS externo
-def load_css(file_name):
+# Función para cargar CSS local optimizado para Streamlit
+def load_local_css(file_name):
     try:
         with open(file_name, "r", encoding="utf-8") as f:
             st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
     except FileNotFoundError:
-        pass  # Si el archivo no existe, continúa sin estilos
+        st.warning(f"No se encontró el archivo CSS: {file_name}")
 
-# Cargar estilos
-load_css("style.css")
+# Cargar CSS de la web original (un solo archivo para web y app)
+load_local_css("styles2.css")
 
 # ============================================
-# SECCIÓN 1: LOGO Y TÍTULO
+# SECCIÓN 1: HEADER - LOGO Y TÍTULO
 # ============================================
-logo = Image.open("logo1.0.png")
-col_logo, col_space = st.columns([1, 4])
+# Header container con diseño mejorado
+st.markdown("""
+<div class="header-container">
+    <div class="logo-container fade-in">
+        <!-- El logo se muestra con st.image más abajo -->
+    </div>
+</div>
+""", unsafe_allow_html=True)
+
+# Logo de la empresa
+import os
+logo_path = "logo1.0.png"
+if not os.path.exists(logo_path):
+    logo_path = "img/icons/ms-icon-150x150.png"  # Usa el ícono en la nueva ruta
+logo = Image.open(logo_path)
+col_logo, col_title = st.columns([1, 5])
+
 with col_logo:
-    st.image(logo, width=180)
+    st.image(logo, width=200)
 
-st.title("Keep Safe Operation")
-st.markdown("### Calculadora de Mezclas y Operaciones para Drones Agrícolas DJI Agras T50")
+with col_title:
+    st.markdown("""
+    <div style="padding-top: 1rem;">
+        <h1 style="margin-bottom: 0.5rem;">Keep Safe Operation</h1>
+        <h3 style="color: var(--color-gray); font-weight: 400; margin-top: 0;">Calculadora de Mezclas y Operaciones para Drones Agrícolas DJI Agras T50</h3>
+    </div>
+    """, unsafe_allow_html=True)
 
 # ============================================
 # SECCIÓN 2: DESCRIPCIÓN BREVE
@@ -327,19 +354,193 @@ if productos_mezcla and hectareas > 0:
         """)
 
 # ============================================
-# PIE DE PÁGINA
+# PIE DE PÁGINA - FOOTER INTEGRADO
+# Usa st.markdown() para renderizado nativo (sin iframe)
+# Fondo claro que se integra con el resto de la app
 # ============================================
 st.markdown("---")
 st.markdown("""
-<div style="text-align: center; padding: 2rem 0; color: var(--color-gray);">
-    <p style="margin: 0; font-size: 0.9rem;">
-        <strong>Keep Safe Operation</strong> | Agricultura de Precisión con Drones DJI Agras T50
-    </p>
-    <p style="margin: 0.5rem 0; font-size: 0.85rem;">
-        Herramienta diseñada para complementar la Hoja de Recomendaciones Operativas
-    </p>
-    <p style="margin: 1rem 0 0 0; font-size: 0.8rem; opacity: 0.7;">
-        © 2026 Keep Safe. Todos los derechos reservados.
-    </p>
+<style>
+    .ks-footer {
+        font-family: 'Poppins', sans-serif;
+        background: #F5F7FA;
+        border-top: 3px solid #1E5F9E;
+        padding: 3rem 2rem 0;
+        margin: 2rem -1rem 0 -1rem;
+        border-radius: 8px 8px 0 0;
+    }
+    .ks-footer-grid {
+        display: grid;
+        grid-template-columns: 1.5fr 1fr 1fr 1.5fr;
+        gap: 2.5rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    .ks-footer h4 {
+        color: #1E5F9E;
+        font-family: 'Poppins', sans-serif;
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 1.2rem;
+        position: relative;
+        padding-bottom: 0.6rem;
+    }
+    .ks-footer h4::after {
+        content: '';
+        position: absolute;
+        bottom: 0; left: 0;
+        width: 30px; height: 2px;
+        background: linear-gradient(135deg, #D96B2A, #C75A1F);
+        border-radius: 1px;
+    }
+    .ks-footer p {
+        color: #6B7280;
+        font-size: 0.9rem;
+        line-height: 1.7;
+        margin: 0.25rem 0;
+    }
+    .ks-footer ul {
+        list-style: none;
+        padding: 0; margin: 0;
+    }
+    .ks-footer ul li {
+        margin-bottom: 0.7rem;
+    }
+    .ks-footer ul li a {
+        color: #4B5563;
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+    }
+    .ks-footer ul li a:hover {
+        color: #D96B2A;
+        padding-left: 6px;
+    }
+    .ks-footer-social {
+        display: flex;
+        gap: 0.75rem;
+        margin: 1.2rem 0;
+        flex-wrap: wrap;
+    }
+    .ks-footer-social a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: rgba(30, 95, 158, 0.1);
+        transition: all 0.3s ease;
+    }
+    .ks-footer-social a:hover {
+        background: #1E5F9E;
+        transform: translateY(-3px);
+        box-shadow: 0 4px 12px rgba(30, 95, 158, 0.3);
+    }
+    .ks-footer-social a img {
+        width: 20px;
+        height: 20px;
+    }
+    .ks-footer-location {
+        margin-top: 1.2rem;
+        padding-top: 1rem;
+        border-top: 1px solid #E5E7EB;
+    }
+    .ks-footer-location strong {
+        color: #1E5F9E;
+        font-size: 0.85rem;
+    }
+    .ks-footer-contact strong {
+        color: #1E5F9E;
+        font-size: 0.85rem;
+    }
+    .ks-footer-contact a {
+        color: #4B5563;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+    .ks-footer-contact a:hover {
+        color: #D96B2A;
+    }
+    .ks-footer-contact p {
+        padding-bottom: 0.3rem;
+        border-bottom: 1px solid #E5E7EB;
+        margin-bottom: 0.3rem;
+    }
+    .ks-footer-contact p:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+    }
+    .ks-footer-bottom {
+        text-align: center;
+        padding: 1.5rem 0;
+        margin-top: 2rem;
+        border-top: 1px solid #E5E7EB;
+    }
+    .ks-footer-bottom p {
+        color: #9CA3AF;
+        font-size: 0.85rem;
+        margin: 0;
+    }
+    @media (max-width: 768px) {
+        .ks-footer-grid {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+        .ks-footer { padding: 2rem 1rem 0; }
+    }
+</style>
+
+<div class="ks-footer">
+    <div class="ks-footer-grid">
+        <div>
+            <h4>Keep Safe S.A.S.</h4>
+            <p>Es una empresa ecuatoriana que integra tecnología, drones y conocimiento técnico para brindar soluciones de agricultura de precisión, bioseguridad y gestión del riesgo.</p>
+            <div class="ks-footer-social">
+                <a href="https://www.youtube.com/@keepsafe_ec" target="_blank" title="YouTube">
+                    <img src="data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='%231E5F9E' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z'/%3E%3C/svg%3E" alt="YouTube">
+                </a>
+                <a href="https://www.instagram.com/keepsafe_ec" target="_blank" title="Instagram">
+                    <img src="data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='%231E5F9E' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z'/%3E%3C/svg%3E" alt="Instagram">
+                </a>
+                <a href="https://www.linkedin.com/company/keepsafeagriculture" target="_blank" title="LinkedIn">
+                    <img src="data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='%231E5F9E' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z'/%3E%3C/svg%3E" alt="LinkedIn">
+                </a>
+            </div>
+            <div class="ks-footer-location">
+                <p><strong>Ubicación</strong></p>
+                <p>Guayaquil, Ecuador</p>
+            </div>
+        </div>
+        <div>
+            <h4>Enlaces</h4>
+            <ul>
+                <li><a href="https://keepsafeagriculture.com" target="_blank">Inicio</a></li>
+                <li><a href="https://keepsafeagriculture.com/servicios" target="_blank">Servicios</a></li>
+                <li><a href="https://keepsafeagriculture.com/nosotros" target="_blank">Nosotros</a></li>
+                <li><a href="https://keepsafeagriculture.com/contactanos" target="_blank">Contacto</a></li>
+            </ul>
+        </div>
+        <div>
+            <h4>Servicios</h4>
+            <ul>
+                <li><a href="https://keepsafeagriculture.com/servicios#fumigacion" target="_blank">Fumigación con drones</a></li>
+                <li><a href="https://keepsafeagriculture.com/servicios#fertilizacion" target="_blank">Fertilización de precisión</a></li>
+                <li><a href="https://keepsafeagriculture.com/servicios#mapeo" target="_blank">Mapeo aéreo</a></li>
+                <li><a href="https://keepsafeagriculture.com/servicios#analisis" target="_blank">Análisis de cultivos</a></li>
+            </ul>
+        </div>
+        <div class="ks-footer-contact">
+            <h4>Contactos</h4>
+            <p><strong>E-Mail:</strong></p>
+            <p><a href="mailto:keepsafe.ecuador@gmail.com">keepsafe.ecuador@gmail.com</a></p>
+            <p style="margin-top:12px"><strong>Teléfonos:</strong></p>
+            <p><a href="https://wa.me/593983899314?text=Hola,%20me%20interesa%20información%20sobre%20sus%20servicios" target="_blank">+593 98 389 9314</a></p>
+            <p><a href="https://wa.me/593963632101?text=Hola,%20me%20interesa%20información%20sobre%20sus%20servicios" target="_blank">+593 96 363 2101</a></p>
+        </div>
+    </div>
+    <div class="ks-footer-bottom">
+        <p>&copy; 2025 Keep Safe S.A.S. Todos los derechos reservados.</p>
+    </div>
 </div>
 """, unsafe_allow_html=True)
