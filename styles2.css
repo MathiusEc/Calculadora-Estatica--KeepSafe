@@ -473,3 +473,61 @@ ul[role="listbox"] li {
     padding: 0 !important;
     line-height: 1.2 !important;
 }
+
+/* ============================================
+   REDUCIR ESPACIOS EN BLANCO
+   ============================================ */
+/* Elimina el espacio superior de la app */
+.stApp {
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+}
+
+header[data-testid="stHeader"] {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+    min-height: 0 !important;
+}
+
+.block-container {
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
+}
+
+/* Reduce el espacio de los separadores */
+.stApp hr {
+    margin-top: 1rem !important;
+    margin-bottom: 1rem !important;
+}
+
+/* Reduce el margen de los títulos y subtítulos */
+.stApp h1 {
+    margin-top: 0.5rem !important;
+    margin-bottom: 1rem !important;
+}
+
+.stApp h2 {
+    margin-top: 1.5rem !important;
+    margin-bottom: 1rem !important;
+}
+
+.stApp h3 {
+    margin-top: 1rem !important;
+    margin-bottom: 0.75rem !important;
+}
+
+.stApp h4 {
+    margin-top: 0.75rem !important;
+    margin-bottom: 0.5rem !important;
+}
+
+/* Reduce el espacio en los expander */
+[data-testid="stExpander"] {
+    margin-bottom: 0.5rem !important;
+    margin-top: 0.5rem !important;
+}
+
+/* Reduce espacio entre columnas */
+[data-testid="column"] {
+    padding: 0 0.5rem !important;
+}

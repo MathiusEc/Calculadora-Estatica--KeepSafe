@@ -35,8 +35,8 @@ load_local_css("styles2.css")
 # ============================================
 # Header container con diseño mejorado
 st.markdown("""
-<div class="header-container">
-    <div class="logo-container fade-in">
+<div class="header-container" style="margin-top:0; padding-top:0;">
+    <div class="logo-container fade-in" style="margin-bottom:0;">
         <!-- El logo se muestra con st.image más abajo -->
     </div>
 </div>
@@ -55,9 +55,9 @@ with col_logo:
 
 with col_title:
     st.markdown("""
-    <div style="padding-top: 1rem;">
-        <h1 style="margin-bottom: 0.5rem;">Keep Safe Operation</h1>
-        <h3 style="color: var(--color-gray); font-weight: 400; margin-top: 0;">Calculadora de Mezclas y Operaciones para Drones Agrícolas DJI Agras T50</h3>
+    <div style="padding-top: 0.5rem;">
+        <h1 style="margin-bottom: 0.5rem; margin-top: 0;">Keep Safe Operation</h1>
+        <h3 style="color: var(--color-gray); font-weight: 400; margin-top: 0; margin-bottom: 0.5rem;">Calculadora de Mezclas y Operaciones para Drones Agrícolas DJI Agras T50</h3>
     </div>
     """, unsafe_allow_html=True)
 
@@ -65,8 +65,8 @@ with col_title:
 # SECCIÓN 2: DESCRIPCIÓN BREVE
 # ============================================
 st.markdown("""
-<div class="descripcion-intro">
-    <p style="margin: 0; font-size: 1.05rem; line-height: 1.8;">
+<div class="descripcion-intro" style="margin-top: 0.5rem; margin-bottom: 0.5rem;">
+    <p style="margin: 0; font-size: 1.05rem; line-height: 1.6;">
         Bienvenido a la <strong>Calculadora de Mezclas y Operaciones para Drones Agrícolas DJI Agras T50</strong>. 
         Esta herramienta está diseñada para complementar la Hoja de Recomendaciones Operativas, permitiendo 
         calcular mezclas de productos fitosanitarios, gestionar ciclos de aplicación y determinar parámetros 
@@ -99,79 +99,24 @@ with col2:
 with col3:
     fecha_aplicacion = st.date_input("Fecha de aplicación", key="fecha_aplicacion")
 
-# ============================================
-# SECCIÓN 4: HISTORIAL DE APLICACIONES
-# ============================================
-st.markdown("---")
-st.subheader("Historial y Ciclos de Aplicación")
-
-# Simulación de historial de aplicaciones previas (para demo)
-historial_aplicaciones = [
-    {"cultivo": "Banano", "fecha": pd.to_datetime("2026-01-10")},
-    {"cultivo": "Banano", "fecha": pd.to_datetime("2026-02-01")},
-    {"cultivo": "Maíz", "fecha": pd.to_datetime("2026-01-15")},
-]
-
-# Calcular ciclo y frecuencia
-ciclo = 1
-frecuencia = None
-aplicaciones_cultivo = [a for a in historial_aplicaciones if a["cultivo"] == cultivo and a["fecha"].year == fecha_aplicacion.year]
-if aplicaciones_cultivo:
-    fechas_previas = sorted([a["fecha"] for a in aplicaciones_cultivo])
-    ult_fecha = fechas_previas[-1]
-    if ult_fecha < pd.to_datetime(fecha_aplicacion):
-        frecuencia = (pd.to_datetime(fecha_aplicacion) - ult_fecha).days
-        ciclo = len(fechas_previas) + 1
-    else:
-        frecuencia = None
-        ciclo = len(fechas_previas)
-else:
-    ciclo = 1
-    frecuencia = None
-
-# Mostrar información de ciclos
-if frecuencia is not None:
-    col1, col2 = st.columns(2)
-    with col1:
-        st.metric("Frecuencia", f"{frecuencia} días", "Desde última aplicación")
-    with col2:
-        st.metric("Ciclo", f"{ciclo}", "Aplicación del año")
-    
-    # Mostrar historial en tabla
-    with st.expander("Ver historial de aplicaciones"):
-        historial_df = pd.DataFrame([
-            {"Cultivo": a["cultivo"], "Fecha": a["fecha"].strftime("%d/%m/%Y")}
-            for a in aplicaciones_cultivo
-        ])
-        st.dataframe(historial_df, use_container_width=True, hide_index=True)
-else:
-    st.info("✨ Esta es la primera aplicación del año. El ciclo comenzará con esta aplicación.")
-
-# Lista de productos agroquímicos comunes
+# Lista de productos agroquímicos comunes (10 productos principales + opción "Otro")
 productos_disponibles = [
     "Seleccionar...",
     "Glifosato 480 SL",
-    "Paraquat",
-    "2,4-D",
     "Mancozeb",
     "Clorpirifos",
     "Cipermetrina",
-    "Lambda Cyhalotrina",
     "Folliup",
     "Kill Bac",
-    "Cari Gold",
-    "Azoxistrobina",
-    "Tebuconazol",
     "Aceite Agrícola",
     "Adherente",
     "Urea Foliar",
-    "Nitrato de Potasio",
     "Fosfito de Potasio",
     "Otro"
 ]
 
 # ============================================
-# SECCIÓN 5: CONFIGURACIÓN DE MEZCLA
+# SECCIÓN 4: CONFIGURACIÓN DE MEZCLA
 # ============================================
 st.markdown("---")
 st.subheader("Configuración de Mezcla de Productos")
@@ -280,7 +225,7 @@ elif productos_mezcla and hectareas > 0:
     agua_necesaria_total = agua_necesaria_1ha * hectareas
     
     # ============================================
-    # SECCIÓN 6: RESULTADOS DE MEZCLA
+    # SECCIÓN 5: RESULTADOS DE MEZCLA
     # ============================================
     st.markdown("---")
     st.subheader("Resultados de Mezcla")
@@ -333,7 +278,7 @@ elif productos_mezcla and hectareas > 0:
         st.metric("Agua Necesaria", f"{agua_necesaria_total:.3f} L", help="Agua requerida para la dilución")
 
     # ============================================
-    # SECCIÓN 7: RECOMENDACIONES TÉCNICAS
+    # SECCIÓN 6: RECOMENDACIONES TÉCNICAS
     # ============================================
     datos = cultivos_data[cultivo]
     tasa = datos["tasa_aplicacion"]
@@ -373,7 +318,7 @@ elif productos_mezcla and hectareas > 0:
                 "Viento máximo recomendado: 10 km/h. Temperatura ideal: 18-27°C.")
 
     # ============================================
-    # SECCIÓN 8: CÁLCULOS OPERATIVOS
+    # SECCIÓN 7: CÁLCULOS OPERATIVOS
     # ============================================
     st.markdown("---")
     st.subheader("Cálculos Operativos de Vuelo")
@@ -403,7 +348,6 @@ elif productos_mezcla and hectareas > 0:
         - **Hectáreas a aplicar:** {hectareas:.1f} ha
         - **Tasa de aplicación:** {tasa:.1f} L/ha
         - **Fecha planificada:** {fecha_aplicacion.strftime("%d/%m/%Y")}
-        - **Ciclo de aplicación:** {'Primer ciclo del año' if frecuencia is None else f'Ciclo {ciclo} - {frecuencia} días desde última aplicación'}
         """)
 
 # ============================================
@@ -418,25 +362,30 @@ st.markdown("""
         font-family: 'Poppins', sans-serif;
         background: #F5F7FA;
         border-top: 3px solid #1E5F9E;
-        padding: 3rem 2rem 0;
-        margin: 2rem -1rem 0 -1rem;
+        padding: 3rem 4rem 0;
+        margin: 3rem 0 0 0;
         border-radius: 8px 8px 0 0;
+        width: 100%;
+        box-sizing: border-box;
     }
     .ks-footer-grid {
         display: grid;
         grid-template-columns: 1.5fr 1fr 1fr 1.5fr;
-        gap: 2.5rem;
-        max-width: 1200px;
-        margin: 0 auto;
+        gap: 3rem;
+        max-width: 100%;
+        width: 100%;
+        margin: 0;
+        padding: 0;
     }
     .ks-footer h4 {
         color: #1E5F9E;
         font-family: 'Poppins', sans-serif;
         font-size: 1.1rem;
         font-weight: 600;
-        margin-bottom: 1.2rem;
+        margin-bottom: 1.5rem;
+        margin-top: 0;
         position: relative;
-        padding-bottom: 0.6rem;
+        padding-bottom: 0.75rem;
     }
     .ks-footer h4::after {
         content: '';
@@ -449,21 +398,22 @@ st.markdown("""
     .ks-footer p {
         color: #6B7280;
         font-size: 0.9rem;
-        line-height: 1.7;
-        margin: 0.25rem 0;
+        line-height: 1.8;
+        margin: 0.5rem 0;
     }
     .ks-footer ul {
         list-style: none;
         padding: 0; margin: 0;
     }
     .ks-footer ul li {
-        margin-bottom: 0.7rem;
+        margin-bottom: 0.9rem;
     }
     .ks-footer ul li a {
         color: #4B5563;
         text-decoration: none;
         font-size: 0.9rem;
         transition: all 0.3s ease;
+        display: inline-block;
     }
     .ks-footer ul li a:hover {
         color: #D96B2A;
@@ -471,16 +421,16 @@ st.markdown("""
     }
     .ks-footer-social {
         display: flex;
-        gap: 0.75rem;
-        margin: 1.2rem 0;
+        gap: 1rem;
+        margin: 1.5rem 0;
         flex-wrap: wrap;
     }
     .ks-footer-social a {
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 38px;
-        height: 38px;
+        width: 40px;
+        height: 40px;
         border-radius: 50%;
         background: rgba(30, 95, 158, 0.1);
         transition: all 0.3s ease;
@@ -495,17 +445,22 @@ st.markdown("""
         height: 20px;
     }
     .ks-footer-location {
-        margin-top: 1.2rem;
-        padding-top: 1rem;
+        margin-top: 1.5rem;
+        padding-top: 1.25rem;
         border-top: 1px solid #E5E7EB;
     }
     .ks-footer-location strong {
         color: #1E5F9E;
         font-size: 0.85rem;
+        font-weight: 600;
+    }
+    .ks-footer-location p {
+        margin-top: 0.5rem;
     }
     .ks-footer-contact strong {
         color: #1E5F9E;
         font-size: 0.85rem;
+        font-weight: 600;
     }
     .ks-footer-contact a {
         color: #4B5563;
@@ -516,9 +471,10 @@ st.markdown("""
         color: #D96B2A;
     }
     .ks-footer-contact p {
-        padding-bottom: 0.3rem;
+        padding-bottom: 0.5rem;
         border-bottom: 1px solid #E5E7EB;
-        margin-bottom: 0.3rem;
+        margin-bottom: 0.5rem;
+        margin-top: 0.5rem;
     }
     .ks-footer-contact p:last-child {
         border-bottom: none;
@@ -526,8 +482,8 @@ st.markdown("""
     }
     .ks-footer-bottom {
         text-align: center;
-        padding: 1.5rem 0;
-        margin-top: 2rem;
+        padding: 2rem 0 1.5rem 0;
+        margin-top: 2.5rem;
         border-top: 1px solid #E5E7EB;
     }
     .ks-footer-bottom p {
@@ -538,9 +494,11 @@ st.markdown("""
     @media (max-width: 768px) {
         .ks-footer-grid {
             grid-template-columns: 1fr;
-            gap: 2rem;
+            gap: 2.5rem;
         }
-        .ks-footer { padding: 2rem 1rem 0; }
+        .ks-footer { 
+            padding: 2rem 1.5rem 0; 
+        }
     }
 </style>
 
