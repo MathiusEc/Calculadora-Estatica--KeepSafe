@@ -521,13 +521,70 @@ st.markdown("""
         font-size: 0.85rem;
         margin: 0;
     }
-    @media (max-width: 768px) {
+    @media (max-width: 1024px) {
+        /* AJUSTA ESTOS VALORES PARA MOVER MANUALMENTE EL CONTENIDO */
+        --offset-horizontal: 125px; /* Cambia este valor para mover a izq/der: ej. -10px, 15px */
+        
         .ks-footer-grid {
-            grid-template-columns: 1fr;
-            gap: 2.5rem;
+            grid-template-columns: 1fr !important;
+            gap: 2rem !important;
         }
         .ks-footer { 
-            padding: 2rem 1.5rem 0; 
+            padding: 2rem 1.5rem 0 !important; 
+        }
+        .ks-footer-grid > div {
+            position: relative !important;
+            left: var(--offset-horizontal, 0px) !important;
+            margin: 0 auto !important;
+            width: fit-content !important;
+        }
+        .ks-footer h4 {
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+            margin-left: auto !important;
+            margin-right: auto !important;
+            width: fit-content !important;
+            position: relative !important;
+        }
+        .ks-footer h4::after {
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            right: auto !important;
+        }
+        .ks-footer p {
+            margin-left: auto !important;
+            margin-right: auto !important;
+            width: fit-content !important;
+        }
+        .ks-footer ul {
+            padding-left: 0 !important;
+            margin: 0 auto !important;
+            list-style: none !important;
+            width: fit-content !important;
+        }
+        .ks-footer ul li {
+            margin: 0.6rem auto !important;
+            width: fit-content !important;
+        }
+        .ks-footer ul li a:hover {
+            transform: none !important;
+            padding-left: 0 !important;
+        }
+        .ks-footer-social {
+            justify-content: center !important;
+            margin: 1rem auto !important;
+        }
+        .ks-footer-location,
+        .ks-footer-contact {
+            margin: 0 auto !important;
+            width: fit-content !important;
+        }
+        .ks-footer-contact p {
+            margin-left: auto !important;
+            margin-right: auto !important;
+            width: fit-content !important;
         }
     }
 </style>
