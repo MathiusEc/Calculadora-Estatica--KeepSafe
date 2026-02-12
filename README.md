@@ -45,7 +45,7 @@ Features include:
 
 ## Author
 
-Project developed by Mathías for Keep Safe S.A.S.
+Project developed by MathiusEc for Keep Safe S.A.S.
 
 ## License
 Copyright © 2026 Keep Safe S.A.S. All rights reserved. This repository and all its contents are the exclusive property of Keep Safe S.A.S. Unauthorized reproduction, distribution, or use of any part of this project is strictly prohibited without prior written consent from Keep Safe S.A.S.
