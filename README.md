@@ -14,14 +14,18 @@ This repository is for documentation and backup purposes only. The application i
 - Pillow (Image Processing)
 
 ## Repository Structure
-- app.py
-- DEPLOYMENT.md
-- README.md
-- requirements.txt
-- styles2.css / styles2_backup.css
-- img/
-	- icons/
-		- browserconfig.xml
+```
+.
+├── app.py                  # Main application
+├── DEPLOYMENT.md           # Deployment notes
+├── README.md               # Project documentation
+├── requirements.txt        # Python dependencies
+├── styles2.css             # Main styles
+├── styles2_backup.css      # Styles backup
+├── img/                    # Images and assets
+│   └── icons/              # Icons
+│       └── browserconfig.xml
+```
 
 ## Project Description
 This tool calculates mixtures and operational parameters for agricultural drones (DJI Agras T50). It supports the following crops:
@@ -39,14 +43,11 @@ Features include:
 - Intuitive, responsive interface
 - Technical recommendations specific to each crop
 
-## License
-© 2025 Keep Safe S.A.S. All rights reserved.
-
-## Important Notes
-- The domain and hosting infrastructure are owned and managed by the client (Keep Safe S.A.S.).
-- This repository is not intended for deployment or installation; it serves as documentation and code backup.
-- Exclusive use for Keep Safe S.A.S. clients and collaborators. The source code is private and confidential.
 
 ## Author
-Mathías [Developer]
-Keep Safe S.A.S.
+## Author
+
+Project developed by Mathías for Keep Safe S.A.S.
+
+## License
+Copyright © 2026 Keep Safe S.A.S. All rights reserved. This repository and all its contents are the exclusive property of Keep Safe S.A.S. Unauthorized reproduction, distribution, or use of any part of this project is strictly prohibited without prior written consent from Keep Safe S.A.S.
