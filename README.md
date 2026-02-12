@@ -43,8 +43,6 @@ Features include:
 - Intuitive, responsive interface
 - Technical recommendations specific to each crop
 
-
-## Author
 ## Author
 
 Project developed by Mathías for Keep Safe S.A.S.
