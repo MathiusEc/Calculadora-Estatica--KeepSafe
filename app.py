@@ -1,13 +1,21 @@
-﻿import streamlit as st
-from PIL import Image
-import pandas as pd
-from datetime import datetime
+﻿
+# =============================
+# IMPORTACIÓN DE LIBRERÍAS
+# =============================
+import streamlit as st  # Framework para apps web interactivas en Python
+from PIL import Image   # Manejo de imágenes (logo)
+import pandas as pd     # Tablas y manejo de datos
+from datetime import datetime  # Fechas
 import os
 import io
 import base64
 
 
 # Configuración de página con favicon actualizado
+
+# =============================
+# CONFIGURACIÓN DE LA PÁGINA
+# =============================
 st.set_page_config(
     page_title="Keep Safe Operation - Calculadora de Mezclas",
     page_icon="img/icons/favicon-16x16.png",  # Favicon 
@@ -23,6 +31,10 @@ st.set_page_config(
 )
 
 # Función para cargar CSS local optimizado para Streamlit
+
+# =============================
+# FUNCIÓN: Cargar CSS local para personalizar la app
+# =============================
 def load_local_css(file_name):
     try:
         with open(file_name, "r", encoding="utf-8") as f:
@@ -30,13 +42,17 @@ def load_local_css(file_name):
     except FileNotFoundError:
         st.warning(f"No se encontró el archivo CSS: {file_name}")
 
-# Cargar CSS de la web original (un solo archivo para web y app)
+
+# Cargar estilos visuales personalizados
 load_local_css("styles2.css")
 
 # ============================================
 # SECCIÓN 1: HEADER - LOGO Y TÍTULO
 # ============================================
-# Header container con diseño mejorado
+
+# =============================
+# SECCIÓN HEADER: Logo y título
+# =============================
 st.markdown("""
 <div class="header-container" style="margin-top:0; padding-top:0;">
     <div class="logo-container fade-in" style="margin-bottom:0;">
@@ -45,7 +61,8 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# Logo de la empresa
+
+# Carga y muestra el logo de la empresa (maneja error si no existe)
 logo_path = "img/KEEP SAFE LOGO-01.png"
 try:
     logo = Image.open(logo_path)
@@ -94,10 +111,11 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# ======================
-# DATOS DE CULTIVOS
-# Modifica aquí los cultivos disponibles y sus parámetros técnicos
-# ======================
+
+# =============================
+# DATOS DE CULTIVOS Y PARÁMETROS TÉCNICOS
+# Diccionario con parámetros por tipo de cultivo
+# =============================
 cultivos_data = {
     "Banano": {"tasa_aplicacion": 18, "velocidad": "20-30 km/h", "altura": "7-8 m", "ancho_faja": "7-9.5 m", "gota": "Fina/Media"},
     "Maíz": {"tasa_aplicacion": 19, "velocidad": "20-25 km/h", "altura": "5-6 m", "ancho_faja": "7-8.5 m", "gota": "Fina/Media/Gruesa"},
@@ -105,10 +123,10 @@ cultivos_data = {
     "Cacao": {"tasa_aplicacion": 25, "velocidad": "20-25 km/h", "altura": "7 m", "ancho_faja": "7-8.5 m", "gota": "Muy Fina/Fina/Media"},
 }
 
-# ======================
+
+# =============================
 # LISTA DE PRODUCTOS DISPONIBLES
-# Modifica aquí los productos fitosanitarios que aparecen en el select
-# ======================
+# =============================
 productos_disponibles = [
     "Seleccionar...",
     "Glifosato 480 SL",
@@ -124,19 +142,21 @@ productos_disponibles = [
     "Otro"
 ]
 
-# ======================
-# PARÁMETROS DE DRON Y CÁLCULOS OPERATIVOS
-# Si el cliente pide cambiar capacidad de tanque, tiempo de vuelo, etc., modificar aquí
-# ======================
+
+# =============================
+# PARÁMETROS DEL DRON (ajustables)
+# =============================
 TANQUE_LITROS = 40  # Capacidad del tanque del dron en litros
 TIEMPO_VUELO_MIN = 10  # Tiempo promedio por vuelo en minutos
 
-# ============================================
-# SECCIÓN 3: DATOS GENERALES
-# ============================================
+
+# =============================
+# ENTRADA DE DATOS GENERALES
+# =============================
 st.markdown("---")
 st.subheader("Datos Generales de la Aplicación")
 
+# Selección de cultivo, cantidad de hectáreas y fecha
 col1, col2, col3 = st.columns(3)
 with col1:
     cultivo = st.selectbox("Cultivo", list(cultivos_data.keys()))
@@ -145,12 +165,14 @@ with col2:
 with col3:
     fecha_aplicacion = st.date_input("Fecha de aplicación", key="fecha_aplicacion")
 
-# ============================================
-# SECCIÓN 4: CONFIGURACIÓN DE MEZCLA
-# ============================================
+
+# =============================
+# CONFIGURACIÓN DE MEZCLA DE PRODUCTOS
+# =============================
 st.markdown("---")
 st.subheader("Configuración de Mezcla de Productos")
 
+# Expander para ingresar productos, cantidades y orden de mezcla
 with st.expander("Productos a aplicar", expanded=True):
     st.markdown("""
     <p style="color: var(--color-gray); margin-bottom: 1.5rem;">
@@ -161,16 +183,19 @@ with st.expander("Productos a aplicar", expanded=True):
     
     num_productos = st.number_input("¿Cuántos productos va a usar?", min_value=1, max_value=10, value=1, step=1)
     
-    # Tabla dinámica de productos
+    # Lista dinámica para almacenar productos y validaciones
     productos_mezcla = []
     ordenes_usados = []
+    productos_usados = []
     tiene_ordenes_duplicados = False
+    tiene_productos_duplicados = False
     
     if num_productos > 0:
         for i in range(int(num_productos)):
             st.markdown(f"**Producto {i+1}**")
             col1, col2, col3 = st.columns([3, 2, 2])
             
+            # Selección de producto
             with col1:
                 producto = st.selectbox(
                     f"Producto {i+1} - Nombre", 
@@ -179,6 +204,7 @@ with st.expander("Productos a aplicar", expanded=True):
                     help="Seleccione el producto fitosanitario a aplicar",
                     index=0
                 )
+            # Cantidad por hectárea
             with col2:
                 cantidad = st.number_input(
                     f"Cantidad (L/ha)", 
@@ -188,6 +214,7 @@ with st.expander("Productos a aplicar", expanded=True):
                     format="%.3f",
                     help="Cantidad del producto por hectárea"
                 )
+            # Orden de mezcla
             with col3:
                 orden = st.number_input(
                     f"Orden de mezcla", 
@@ -199,7 +226,7 @@ with st.expander("Productos a aplicar", expanded=True):
                     help="Orden en el que se agregará a la mezcla"
                 )
             
-            # Validación de orden duplicado
+            # Validación: no permitir órdenes duplicados
             if orden in ordenes_usados and producto != "Seleccionar...":
                 tiene_ordenes_duplicados = True
                 st.markdown(f"""
@@ -211,6 +238,19 @@ with st.expander("Productos a aplicar", expanded=True):
                 </div>
                 """, unsafe_allow_html=True)
             
+            # Validación: no permitir productos duplicados
+            if producto in productos_usados and producto != "Seleccionar...":
+                tiene_productos_duplicados = True
+                st.markdown(f"""
+                <div style="display: flex; align-items: center; gap: 0.5rem; background: #FFEBEE; border-left: 4px solid #F44336; padding: 0.75rem 1rem; border-radius: 4px; margin: 0.5rem 0;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="#F44336">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                    </svg>
+                    <span style="color: #B71C1C; font-size: 0.9rem;">El producto "{producto}" ya fue seleccionado. Por favor, elija un producto diferente.</span>
+                </div>
+                """, unsafe_allow_html=True)
+            
+            # Guardar producto válido
             if producto != "Seleccionar..." and cantidad > 0:
                 productos_mezcla.append({
                     "producto": producto,
@@ -219,28 +259,44 @@ with st.expander("Productos a aplicar", expanded=True):
                 })
                 if orden not in ordenes_usados:
                     ordenes_usados.append(orden)
+                if producto not in productos_usados:
+                    productos_usados.append(producto)
             
             if i < num_productos - 1:
                 st.markdown("")
 
 # Mostrar mensaje si hay errores de validación
-if tiene_ordenes_duplicados:
+if tiene_ordenes_duplicados or tiene_productos_duplicados:
     st.markdown("---")
-    st.markdown("""
+    
+    # Mensajes específicos según el tipo de error
+    errores = []
+    if tiene_ordenes_duplicados:
+        errores.append("órdenes de mezcla duplicados")
+    if tiene_productos_duplicados:
+        errores.append("productos repetidos")
+    
+    mensaje_error = " y ".join(errores)
+    
+    st.markdown(f"""
     <div style="display: flex; align-items: center; gap: 1rem; background: #FFF4E6; border: 2px solid #FF9800; padding: 1.25rem 1.5rem; border-radius: 8px; margin: 1rem 0;">
         <svg width="32" height="32" viewBox="0 0 24 24" fill="none" style="flex-shrink: 0;">
             <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z" fill="#FF9800"/>
         </svg>
         <div>
             <h4 style="color: #E65100; margin: 0 0 0.5rem 0; font-size: 1.1rem;">Corrija los errores antes de continuar</h4>
-            <p style="color: #663C00; margin: 0; font-size: 0.95rem;">Por favor, asigne órdenes de mezcla únicos a cada producto. Los cálculos se mostrarán una vez que corrija los órdenes duplicados.</p>
+            <p style="color: #663C00; margin: 0; font-size: 0.95rem;">Se detectaron {mensaje_error}. Por favor, corrija estos errores para continuar con los cálculos.</p>
         </div>
     </div>
     """, unsafe_allow_html=True)
 
-# Cálculos automáticos - solo si no hay errores de validación
+
+# =============================
+# CÁLCULOS AUTOMÁTICOS Y RESULTADOS
+# =============================
+# Solo se ejecuta si no hay errores de validación
 elif productos_mezcla and hectareas > 0:
-    # Ordenar por orden de mezcla
+    # Ordenar productos según el orden de mezcla definido por el usuario
     productos_mezcla_ordenados = sorted(productos_mezcla, key=lambda x: x["orden"])
     
     # Cálculos para 1 hectárea
@@ -254,9 +310,9 @@ elif productos_mezcla and hectareas > 0:
     total_mezcla_total = total_mezcla_1ha * hectareas
     agua_necesaria_total = agua_necesaria_1ha * hectareas
     
-    # ============================================
-    # SECCIÓN 5: RESULTADOS DE MEZCLA
-    # ============================================
+    # =============================
+    # RESULTADOS DE MEZCLA
+    # =============================
     st.markdown("---")
     st.subheader("Resultados de Mezcla")
     
@@ -270,12 +326,14 @@ elif productos_mezcla and hectareas > 0:
     </p>
     """, unsafe_allow_html=True)
     
+    # Mostrar tabla de productos para 1 ha
     tabla_1ha = pd.DataFrame([
         {"Producto": p['producto'], "Cantidad (L/ha)": f"{p['cantidad']:.3f}", "Orden de Mezcla": p['orden']}
         for p in productos_mezcla_ordenados
     ])
     st.dataframe(tabla_1ha, use_container_width=True, hide_index=True)
     
+    # Métricas resumen para 1 ha
     col1, col2, col3 = st.columns(3)
     with col1:
         st.metric("Suma de Reactivos", f"{suma_reactivos_1ha:.3f} L/ha", help="Total de productos fitosanitarios")
@@ -293,12 +351,14 @@ elif productos_mezcla and hectareas > 0:
     </p>
     """, unsafe_allow_html=True)
     
+    # Mostrar tabla de productos para el total de hectáreas
     tabla_total = pd.DataFrame([
         {"Producto": p['producto'], "Cantidad Total (L)": f"{p['cantidad'] * hectareas:.3f}", "Orden de Mezcla": p['orden']}
         for p in productos_mezcla_ordenados
     ])
     st.dataframe(tabla_total, use_container_width=True, hide_index=True)
     
+    # Métricas resumen para el total de hectáreas
     col1, col2, col3 = st.columns(3)
     with col1:
         st.metric("Suma de Reactivos", f"{suma_reactivos_total:.3f} L", help="Total de productos fitosanitarios")
@@ -307,18 +367,19 @@ elif productos_mezcla and hectareas > 0:
     with col3:
         st.metric("Agua Necesaria", f"{agua_necesaria_total:.3f} L", help="Agua requerida para la dilución")
 
-    # ============================================
-    # SECCIÓN 6: RECOMENDACIONES TÉCNICAS
-    # ============================================
+    # =============================
+    # RECOMENDACIONES TÉCNICAS Y PARÁMETROS DE VUELO
+    # =============================
     datos = cultivos_data[cultivo]
     tasa = datos["tasa_aplicacion"]
     total_sol = tasa * hectareas
-    vuelos = total_sol / 40
-    tiempo = vuelos * 10 / 60
+    vuelos = total_sol / TANQUE_LITROS  # Usa el parámetro global
+    tiempo = vuelos * TIEMPO_VUELO_MIN / 60
 
     st.markdown("---")
     st.subheader("Recomendaciones Técnicas para el Operador")
     
+    # Expander con parámetros técnicos sugeridos
     with st.expander("Parámetros de Vuelo y Aplicación", expanded=False):
         st.markdown("""
         <p style="color: var(--color-gray); font-size: 0.95rem; margin-bottom: 1.5rem;">
@@ -347,9 +408,9 @@ elif productos_mezcla and hectareas > 0:
         st.info("**Importante:** Verifique las condiciones ambientales antes de iniciar la aplicación. "
                 "Viento máximo recomendado: 10 km/h. Temperatura ideal: 18-27°C.")
 
-    # ============================================
-    # SECCIÓN 7: CÁLCULOS OPERATIVOS
-    # ============================================
+    # =============================
+    # CÁLCULOS OPERATIVOS DE VUELO
+    # =============================
     st.markdown("---")
     st.subheader("Cálculos Operativos de Vuelo")
     
@@ -359,22 +420,23 @@ elif productos_mezcla and hectareas > 0:
     </p>
     """, unsafe_allow_html=True)
     
+    # Métricas de recursos y tiempo estimado
     col1, col2, col3 = st.columns(3)
     with col1:
         st.metric("Solución Total", f"{total_sol:.2f} L", 
                  help="Volumen total de solución a preparar")
     with col2:
         st.metric("Vuelos Estimados", f"{vuelos:.0f}", 
-                 help="Número de vuelos necesarios (capacidad 40L)")
+                 help=f"Número de vuelos necesarios (capacidad {TANQUE_LITROS}L)")
     with col3:
         st.metric("Tiempo Estimado", f"{tiempo:.2f} h", 
                  help="Tiempo total de aplicación aproximado")
     
-    # Información adicional
+    # Expander con detalles adicionales de cálculo
     with st.expander("Detalles de Cálculo"):
         st.markdown(f"""
-        - **Capacidad del tanque:** 40 litros
-        - **Tiempo promedio por vuelo:** 10 minutos
+        - **Capacidad del tanque:** {TANQUE_LITROS} litros
+        - **Tiempo promedio por vuelo:** {TIEMPO_VUELO_MIN} minutos
         - **Hectáreas a aplicar:** {hectareas:.1f} ha
         - **Tasa de aplicación:** {tasa:.1f} L/ha
         - **Fecha planificada:** {fecha_aplicacion.strftime("%d/%m/%Y")}
