@@ -675,10 +675,11 @@ st.markdown("""
         <div>
             <h4>Enlaces</h4>
             <ul>
-                <li><a href="https://keepsafeagriculture.com" target="_blank">Inicio</a></li>
-                <li><a href="https://keepsafeagriculture.com/servicios" target="_blank">Servicios</a></li>
-                <li><a href="https://keepsafeagriculture.com/nosotros" target="_blank">Nosotros</a></li>
-                <li><a href="https://keepsafeagriculture.com/contactanos" target="_blank">Contacto</a></li>
+                <li><a href="index.html" class="active">Inicio</a></li>
+                <li><a href="nosotros/">Nosotros</a></li>
+                <li><a href="servicios/">Servicios</a></li>
+                <li><a href="https://calculadora-keepsafe.streamlit.app/" target="_blank" rel="noopener">Calculadora</a></li>
+                <li><a href="contactanos/">Contacto</a></li>
             </ul>
         </div>
         <div>
