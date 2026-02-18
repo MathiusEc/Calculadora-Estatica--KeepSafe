@@ -655,12 +655,12 @@ st.markdown("""
     <div class="ks-footer-grid">
         <div>
             <h4>Keep Safe S.A.S.</h4>
-            <p>Es una empresa ecuatoriana que integra tecnología, drones y conocimiento técnico para brindar soluciones de agricultura de precisión, bioseguridad y gestión del riesgo.</p>
+            <p>Es una empresa ecuatoriana que integra tecnología, drones y conocimiento técnico para brindar soluciones de agricultura de precisión, bioseguridad y gestión del riesgo, con altos estándares operativos.</p>
             <div class="ks-footer-social">
-                <a href="https://www.youtube.com/@keepsafe_ec" target="_blank" title="YouTube">
+                <a href="URL YouTube" target="_blank" title="YouTube">
                     <img src="data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='%231E5F9E' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z'/%3E%3C/svg%3E" alt="YouTube">
                 </a>
-                <a href="https://www.instagram.com/keepsafe_ec" target="_blank" title="Instagram">
+                <a href="https://www.instagram.com/keepsafe_ec?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" title="Instagram">
                     <img src="data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='%231E5F9E' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z'/%3E%3C/svg%3E" alt="Instagram">
                 </a>
                 <a href="https://www.linkedin.com/company/keepsafeagriculture" target="_blank" title="LinkedIn">
@@ -675,20 +675,20 @@ st.markdown("""
         <div>
             <h4>Enlaces</h4>
             <ul>
-                <li><a href="index.html" class="active">Inicio</a></li>
-                <li><a href="nosotros/">Nosotros</a></li>
-                <li><a href="servicios/">Servicios</a></li>
+                <li><a href="https://www.keepsafeagriculture.com/" class="active">Inicio</a></li>
+                <li><a href="https://www.keepsafeagriculture.com/nosotros/">Nosotros</a></li>
+                <li><a href="https://www.keepsafeagriculture.com/servicios/">Servicios</a></li>
                 <li><a href="https://calculadora-keepsafe.streamlit.app/" target="_blank" rel="noopener">Calculadora</a></li>
-                <li><a href="contactanos/">Contacto</a></li>
+                <li><a href="https://www.keepsafeagriculture.com/contactanos/">Contacto</a></li>
             </ul>
         </div>
         <div>
             <h4>Servicios</h4>
             <ul>
-                <li><a href="https://keepsafeagriculture.com/servicios#fumigacion" target="_blank">Fumigación con drones</a></li>
-                <li><a href="https://keepsafeagriculture.com/servicios#fertilizacion" target="_blank">Fertilización de precisión</a></li>
-                <li><a href="https://keepsafeagriculture.com/servicios#mapeo" target="_blank">Mapeo aéreo</a></li>
-                <li><a href="https://keepsafeagriculture.com/servicios#analisis" target="_blank">Análisis de cultivos</a></li>
+                <li><a href="https://www.keepsafeagriculture.com/servicios/">Fumigación con drones</a></li>
+                <li><a href="https://www.keepsafeagriculture.com/servicios/">Fertilización de precisión</a></li>
+                <li><a href="https://www.keepsafeagriculture.com/servicios/">Mapeo aéreo</a></li>
+                <li><a href="https://www.keepsafeagriculture.com/servicios/">Análisis de cultivos</a></li>
             </ul>
         </div>
         <div class="ks-footer-contact">
@@ -696,12 +696,11 @@ st.markdown("""
             <p><strong>E-Mail:</strong></p>
             <p><a href="mailto:keepsafe.ecuador@gmail.com">keepsafe.ecuador@gmail.com</a></p>
             <p style="margin-top:12px"><strong>Teléfonos:</strong></p>
-            <p><a href="https://wa.me/593983899314?text=Hola,%20me%20interesa%20información%20sobre%20sus%20servicios" target="_blank">+593 98 389 9314</a></p>
-            <p><a href="https://wa.me/593963632101?text=Hola,%20me%20interesa%20información%20sobre%20sus%20servicios" target="_blank">+593 96 363 2101</a></p>
+            <p><a href="https://wa.me/593979459949?text=%C2%A1Hola!%20Me%20interesa%20conocer%20m%C3%A1s%20sobre%20sus%20soluciones%20agr%C3%ADcolas%20y%20c%C3%B3mo%20podr%C3%ADan%20implementarse%20en%20mi%20cultivo." target="_blank" rel="noopener noreferrer">+593 97 945 9949</a></p>
         </div>
     </div>
     <div class="ks-footer-bottom">
-        <p>&copy; 2025 Keep Safe S.A.S. Todos los derechos reservados.</p>
+        <p>&copy; 2025 Todos los derechos reservados.</p>
     </div>
 </div>
 """, unsafe_allow_html=True)
