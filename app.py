@@ -128,17 +128,14 @@ cultivos_data = {
 # LISTA DE PRODUCTOS DISPONIBLES
 # =============================
 productos_disponibles = [
-    "Seleccionar...",
-    "Glifosato 480 SL",
-    "Mancozeb",
-    "Clorpirifos",
-    "Cipermetrina",
-    "Folliup",
-    "Kill Bac",
-    "Aceite Agrícola",
-    "Adherente",
-    "Urea Foliar",
-    "Fosfito de Potasio",
+    "Acisol complex",
+    "Killbac Oil",
+    "Cari Gold",
+    "Foliup",
+    "Mojave",
+    "Kanelcide",
+    "Carrier",
+    "Mokave",
     "Otro"
 ]
 
@@ -181,25 +178,33 @@ with st.expander("Productos a aplicar", expanded=True):
     </p>
     """, unsafe_allow_html=True)
     
+    volumen_total_mezcla = st.number_input(
+        "Volumen total de mezcla (L/ha)",
+        min_value=0.0,
+        step=0.1,
+        value=0.0,
+        help="Ingrese el volumen total de mezcla por hectárea que desea preparar."
+    )
+
     num_productos = st.number_input("¿Cuántos productos va a usar?", min_value=1, max_value=10, value=1, step=1)
-    
+
     # Lista dinámica para almacenar productos y validaciones
     productos_mezcla = []
     ordenes_usados = []
     productos_usados = []
     tiene_ordenes_duplicados = False
     tiene_productos_duplicados = False
-    
+
     if num_productos > 0:
         for i in range(int(num_productos)):
             st.markdown(f"**Producto {i+1}**")
             col1, col2, col3 = st.columns([3, 2, 2])
-            
+
             # Selección de producto
             with col1:
                 producto = st.selectbox(
-                    f"Producto {i+1} - Nombre", 
-                    productos_disponibles, 
+                    f"Producto {i+1} - Nombre",
+                    productos_disponibles,
                     key=f"prod_{i}",
                     help="Seleccione el producto fitosanitario a aplicar",
                     index=0
@@ -207,25 +212,25 @@ with st.expander("Productos a aplicar", expanded=True):
             # Cantidad por hectárea
             with col2:
                 cantidad = st.number_input(
-                    f"Cantidad (L/ha)", 
-                    min_value=0.0, 
-                    step=0.01, 
-                    key=f"cant_{i}", 
+                    f"Cantidad (L/ha)",
+                    min_value=0.0,
+                    step=0.01,
+                    key=f"cant_{i}",
                     format="%.3f",
                     help="Cantidad del producto por hectárea"
                 )
             # Orden de mezcla
             with col3:
                 orden = st.number_input(
-                    f"Orden de mezcla", 
-                    min_value=1, 
-                    max_value=int(num_productos), 
-                    value=min(i+1, int(num_productos)), 
-                    step=1, 
+                    f"Orden de mezcla",
+                    min_value=1,
+                    max_value=int(num_productos),
+                    value=min(i+1, int(num_productos)),
+                    step=1,
                     key=f"orden_{i}",
                     help="Orden en el que se agregará a la mezcla"
                 )
-            
+
             # Validación: no permitir órdenes duplicados
             if orden in ordenes_usados and producto != "Seleccionar...":
                 tiene_ordenes_duplicados = True
@@ -237,7 +242,7 @@ with st.expander("Productos a aplicar", expanded=True):
                     <span style="color: #663C00; font-size: 0.9rem;">El orden {int(orden)} ya está asignado a otro producto. Por favor, use un orden diferente.</span>
                 </div>
                 """, unsafe_allow_html=True)
-            
+
             # Validación: no permitir productos duplicados
             if producto in productos_usados and producto != "Seleccionar...":
                 tiene_productos_duplicados = True
@@ -249,7 +254,7 @@ with st.expander("Productos a aplicar", expanded=True):
                     <span style="color: #B71C1C; font-size: 0.9rem;">El producto "{producto}" ya fue seleccionado. Por favor, elija un producto diferente.</span>
                 </div>
                 """, unsafe_allow_html=True)
-            
+
             # Guardar producto válido
             if producto != "Seleccionar..." and cantidad > 0:
                 productos_mezcla.append({
@@ -261,7 +266,7 @@ with st.expander("Productos a aplicar", expanded=True):
                     ordenes_usados.append(orden)
                 if producto not in productos_usados:
                     productos_usados.append(producto)
-            
+
             if i < num_productos - 1:
                 st.markdown("")
 
@@ -296,76 +301,85 @@ if tiene_ordenes_duplicados or tiene_productos_duplicados:
 # =============================
 # Solo se ejecuta si no hay errores de validación
 elif productos_mezcla and hectareas > 0:
-    # Ordenar productos según el orden de mezcla definido por el usuario
-    productos_mezcla_ordenados = sorted(productos_mezcla, key=lambda x: x["orden"])
-    
-    # Cálculos para 1 hectárea
-    suma_reactivos_1ha = sum([p["cantidad"] for p in productos_mezcla])
-    datos_cultivo = cultivos_data[cultivo]
-    total_mezcla_1ha = datos_cultivo["tasa_aplicacion"]
-    agua_necesaria_1ha = total_mezcla_1ha - suma_reactivos_1ha
-    
-    # Cálculos para el total de hectáreas
-    suma_reactivos_total = suma_reactivos_1ha * hectareas
-    total_mezcla_total = total_mezcla_1ha * hectareas
-    agua_necesaria_total = agua_necesaria_1ha * hectareas
-    
-    # =============================
-    # RESULTADOS DE MEZCLA
-    # =============================
-    st.markdown("---")
-    st.subheader("Resultados de Mezcla")
-    
-    st.success("Cálculos completados exitosamente. Revise los resultados a continuación.")
-    
-    # Tabla para 1 ha
-    st.markdown("#### Mezcla para 1 Hectárea")
-    st.markdown("""
-    <p style="color: var(--color-gray); font-size: 0.95rem; margin-bottom: 1rem;">
-    Esta tabla muestra las cantidades necesarias de cada producto para aplicar en una hectárea.
-    </p>
-    """, unsafe_allow_html=True)
-    
-    # Mostrar tabla de productos para 1 ha
-    tabla_1ha = pd.DataFrame([
-        {"Producto": p['producto'], "Cantidad (L/ha)": f"{p['cantidad']:.3f}", "Orden de Mezcla": p['orden']}
-        for p in productos_mezcla_ordenados
-    ])
-    st.dataframe(tabla_1ha, use_container_width=True, hide_index=True)
-    
-    # Métricas resumen para 1 ha
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        st.metric("Suma de Reactivos", f"{suma_reactivos_1ha:.3f} L/ha", help="Total de productos fitosanitarios")
-    with col2:
-        st.metric("Total Mezcla", f"{total_mezcla_1ha:.3f} L/ha", help="Volumen total de la solución")
-    with col3:
-        st.metric("Agua Necesaria", f"{agua_necesaria_1ha:.3f} L/ha", help="Agua requerida para la dilución")
-    
-    # Tabla para total de hectáreas
-    st.markdown("---")
-    st.markdown(f"#### Mezcla Total para {hectareas:.1f} Hectáreas")
-    st.markdown("""
-    <p style="color: var(--color-gray); font-size: 0.95rem; margin-bottom: 1rem;">
-    Esta tabla muestra las cantidades totales necesarias para aplicar en todas las hectáreas especificadas.
-    </p>
-    """, unsafe_allow_html=True)
-    
-    # Mostrar tabla de productos para el total de hectáreas
-    tabla_total = pd.DataFrame([
-        {"Producto": p['producto'], "Cantidad Total (L)": f"{p['cantidad'] * hectareas:.3f}", "Orden de Mezcla": p['orden']}
-        for p in productos_mezcla_ordenados
-    ])
-    st.dataframe(tabla_total, use_container_width=True, hide_index=True)
-    
-    # Métricas resumen para el total de hectáreas
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        st.metric("Suma de Reactivos", f"{suma_reactivos_total:.3f} L", help="Total de productos fitosanitarios")
-    with col2:
-        st.metric("Total Mezcla", f"{total_mezcla_total:.3f} L", help="Volumen total de la solución")
-    with col3:
-        st.metric("Agua Necesaria", f"{agua_necesaria_total:.3f} L", help="Agua requerida para la dilución")
+    # Validación: volumen total debe ser mayor a cero y todos los productos deben tener cantidad > 0
+    if volumen_total_mezcla <= 0:
+        st.warning("Ingrese un volumen total de mezcla (L/ha) mayor a cero para realizar los cálculos.")
+    elif any(p["cantidad"] <= 0 for p in productos_mezcla):
+        st.info("Ingrese la cantidad de todos los productos para ver los resultados de la mezcla.")
+    else:
+        # Ordenar productos según el orden de mezcla definido por el usuario
+        productos_mezcla_ordenados = sorted(productos_mezcla, key=lambda x: x["orden"])
+
+        # Cálculos para 1 hectárea
+        suma_reactivos_1ha = sum([p["cantidad"] for p in productos_mezcla])
+        total_mezcla_1ha = volumen_total_mezcla
+        agua_necesaria_1ha = total_mezcla_1ha - suma_reactivos_1ha
+
+        # Validación: suma de reactivos no puede superar el volumen total
+        if suma_reactivos_1ha > total_mezcla_1ha:
+            st.error("La suma de los reactivos supera el volumen total de mezcla por hectárea. Ajuste las cantidades.")
+        else:
+            # Cálculos para el total de hectáreas
+            suma_reactivos_total = suma_reactivos_1ha * hectareas
+            total_mezcla_total = total_mezcla_1ha * hectareas
+            agua_necesaria_total = agua_necesaria_1ha * hectareas
+
+            # =============================
+            # RESULTADOS DE MEZCLA
+            # =============================
+            st.markdown("---")
+            st.subheader("Resultados de Mezcla")
+
+            st.success("Cálculos completados exitosamente. Revise los resultados a continuación.")
+
+            # Tabla para 1 ha
+            st.markdown("#### Mezcla para 1 Hectárea")
+            st.markdown("""
+            <p style="color: var(--color-gray); font-size: 0.95rem; margin-bottom: 1rem;">
+            Esta tabla muestra las cantidades necesarias de cada producto para aplicar en una hectárea.
+            </p>
+            """, unsafe_allow_html=True)
+
+            # Mostrar tabla de productos para 1 ha
+            tabla_1ha = pd.DataFrame([
+                {"Producto": p['producto'], "Cantidad (L/ha)": f"{p['cantidad']:.3f}", "Orden de Mezcla": p['orden']}
+                for p in productos_mezcla_ordenados
+            ])
+            st.dataframe(tabla_1ha, use_container_width=True, hide_index=True)
+
+            # Métricas resumen para 1 ha
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                st.metric("Suma de Reactivos", f"{suma_reactivos_1ha:.3f} L/ha", help="Total de productos fitosanitarios")
+            with col2:
+                st.metric("Total Mezcla", f"{total_mezcla_1ha:.3f} L/ha", help="Volumen total de la solución")
+            with col3:
+                st.metric("Agua Necesaria", f"{agua_necesaria_1ha:.3f} L/ha", help="Agua requerida para la dilución")
+
+            # Tabla para total de hectáreas
+            st.markdown("---")
+            st.markdown(f"#### Mezcla Total para {hectareas:.1f} Hectáreas")
+            st.markdown("""
+            <p style="color: var(--color-gray); font-size: 0.95rem; margin-bottom: 1rem;">
+            Esta tabla muestra las cantidades totales necesarias para aplicar en todas las hectáreas especificadas.
+            </p>
+            """, unsafe_allow_html=True)
+
+            # Mostrar tabla de productos para el total de hectáreas
+            tabla_total = pd.DataFrame([
+                {"Producto": p['producto'], "Cantidad Total (L)": f"{p['cantidad'] * hectareas:.3f}", "Orden de Mezcla": p['orden']}
+                for p in productos_mezcla_ordenados
+            ])
+            st.dataframe(tabla_total, use_container_width=True, hide_index=True)
+
+            # Métricas resumen para el total de hectáreas
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                st.metric("Suma de Reactivos", f"{suma_reactivos_total:.3f} L", help="Total de productos fitosanitarios")
+            with col2:
+                st.metric("Total Mezcla", f"{total_mezcla_total:.3f} L", help="Volumen total de la solución")
+            with col3:
+                st.metric("Agua Necesaria", f"{agua_necesaria_total:.3f} L", help="Agua requerida para la dilución")
 
     # =============================
     # RECOMENDACIONES TÉCNICAS Y PARÁMETROS DE VUELO
