@@ -160,6 +160,7 @@ productos_disponibles = [
     "Kanelcide",
     "Killbac Oil",
     "Mancozeb 80 WP (genéricos)",
+    "Mimoten",
     "Mojave",
     "Mokave",
     "Nordox",
