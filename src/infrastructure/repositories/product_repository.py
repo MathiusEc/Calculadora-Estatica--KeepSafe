@@ -24,6 +24,7 @@ class ProductRepository:
         "Cabrio",
         "Cari Gold",
         "Carrier",
+        "Cavendish care",
         "Citroil",
         "Crop Oil Concentrate (COC)",
         "Cuprofix",
