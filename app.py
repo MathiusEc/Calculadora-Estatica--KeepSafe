@@ -356,6 +356,7 @@ st.markdown("""
                 <li><a href="https://www.keepsafeagriculture.com/nosotros/">Nosotros</a></li>
                 <li><a href="https://www.keepsafeagriculture.com/servicios/">Servicios</a></li>
                 <li><a href="https://calculadora-keepsafe.streamlit.app/" target="_blank" rel="noopener">Calculadora</a></li>
+                <li><a href="https://www.weathernerds.org/satellite/?initsatsrc=On&initsatname=GOES-E&initsattype=ir&initcscheme=ir1&initimdimx=1050&initimdimy=777&initrange=-1.000:-81.750:-3.000:-78.500&initloop=True&initnframes=20&initlightningge=On&initlightninggw=Off&initltngfed=Off&initltngtoe=Off&initinterstates=On&initwarnings=On&initlatlon=Off&initascatb=Off&initascatc=Off&initascatambb=Off&initascatambc=Off&initsst=Off&initecens=Off&initgefs=Off" target="_blank" rel="noopener">Pron&#243;stico</a></li>
                 <li><a href="https://www.keepsafeagriculture.com/contactanos/">Contacto</a></li>
             </ul>
         </div>
