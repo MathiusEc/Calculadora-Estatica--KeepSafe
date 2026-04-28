@@ -39,7 +39,7 @@ def render_header() -> None:
             <div style="padding-top: 0.5rem;">
                 <h1 style="margin-bottom: 0.5rem; margin-top: 0;">Keep Safe Operation</h1>
                 <h3 style="color: var(--color-gray); font-weight: 400; margin-top: 0; margin-bottom: 0.5rem;">
-                    Calculadora de Mezclas y Operaciones para Drones Agrícolas DJI Agras T50
+                    Calculadora de Mezclas y Operaciones para Drones Agrícolas
                 </h3>
             </div>
             """,
@@ -53,7 +53,7 @@ def render_description() -> None:
         """
         <div class="descripcion-intro" style="margin-top: 0.5rem; margin-bottom: 0.5rem;">
             <p style="margin: 0; font-size: 1.05rem; line-height: 1.6;">
-                Bienvenido a la <strong>Calculadora de Mezclas y Operaciones para Drones Agrícolas DJI Agras T50</strong>.
+                Bienvenido a la <strong>Calculadora de Mezclas y Operaciones para Drones Agrícolas</strong>.
                 Esta herramienta está diseñada para complementar la Hoja de Recomendaciones Operativas, permitiendo
                 calcular mezclas de productos fitosanitarios, gestionar ciclos de aplicación y determinar parámetros
                 técnicos de manera precisa y alineada con las mejores prácticas de operación segura.
