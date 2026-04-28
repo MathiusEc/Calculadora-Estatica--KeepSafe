@@ -367,6 +367,7 @@ st.markdown("""
                 <li><a href="https://www.keepsafeagriculture.com/servicios/">Fertilización de precisión</a></li>
                 <li><a href="https://www.keepsafeagriculture.com/servicios/">Mapeo aéreo</a></li>
                 <li><a href="https://www.keepsafeagriculture.com/servicios/">Análisis de cultivos</a></li>
+                <li><a href="https://www.keepsafeagriculture.com/servicios/">Inteligencia de Aplicaciones</a></li>
             </ul>
         </div>
         <div class="ks-footer-contact">
